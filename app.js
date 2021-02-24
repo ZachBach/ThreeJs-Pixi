@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
 
 let image = require('./image/img-1.jpg');
-console.log(image)
+
+console.log(PIXI)
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
