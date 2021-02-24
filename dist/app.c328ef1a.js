@@ -42302,46 +42302,64 @@ if (typeof _deprecation2.default === 'function') {
 // Always export PixiJS globally.
 global.PIXI = exports; // eslint-disable-line
 
-},{"./polyfill":"node_modules/pixi.js/lib/polyfill/index.js","./core":"node_modules/pixi.js/lib/core/index.js","./deprecation":"node_modules/pixi.js/lib/deprecation.js","./accessibility":"node_modules/pixi.js/lib/accessibility/index.js","./extract":"node_modules/pixi.js/lib/extract/index.js","./extras":"node_modules/pixi.js/lib/extras/index.js","./filters":"node_modules/pixi.js/lib/filters/index.js","./interaction":"node_modules/pixi.js/lib/interaction/index.js","./loaders":"node_modules/pixi.js/lib/loaders/index.js","./mesh":"node_modules/pixi.js/lib/mesh/index.js","./particles":"node_modules/pixi.js/lib/particles/index.js","./prepare":"node_modules/pixi.js/lib/prepare/index.js"}],"image/img-1.jpg":[function(require,module,exports) {
+},{"./polyfill":"node_modules/pixi.js/lib/polyfill/index.js","./core":"node_modules/pixi.js/lib/core/index.js","./deprecation":"node_modules/pixi.js/lib/deprecation.js","./accessibility":"node_modules/pixi.js/lib/accessibility/index.js","./extract":"node_modules/pixi.js/lib/extract/index.js","./extras":"node_modules/pixi.js/lib/extras/index.js","./filters":"node_modules/pixi.js/lib/filters/index.js","./interaction":"node_modules/pixi.js/lib/interaction/index.js","./loaders":"node_modules/pixi.js/lib/loaders/index.js","./mesh":"node_modules/pixi.js/lib/mesh/index.js","./particles":"node_modules/pixi.js/lib/particles/index.js","./prepare":"node_modules/pixi.js/lib/prepare/index.js"}],"shader/fragment.glsl":[function(require,module,exports) {
+module.exports = "#define GLSLIFY 1\nuniform sampler2D uSampler;\nuniform sampler2D uTextureOne;\nuniform sampler2D uTextureTwo;\n\nvarying vec2 vTextureCoord;\n\nvoid main(){\n    gl_FragColor=vec4(1.,1.,0.,1.);\n    // vec2 uv=vec2(vTextureCoord.x+sin(vTextureCoord.y*10.)/10.,vTextureCoord.y);\n    gl_FragColor=texture2D(uTextureOne,vTextureCoord);\n}\n";
+},{}],"image/img-1.jpg":[function(require,module,exports) {
 module.exports = "/img-1.8c78bdc1.jpg";
+},{}],"image/img-5.jpg":[function(require,module,exports) {
+module.exports = "/img-5.7c23deb7.jpg";
 },{}],"app.js":[function(require,module,exports) {
 "use strict";
 
 var PIXI = _interopRequireWildcard(require("pixi.js"));
 
+var _fragment = _interopRequireDefault(require("./shader/fragment.glsl"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-var image = require('./image/img-1.jpg');
+var img = require('./image/img-1.jpg');
 
-console.log(PIXI); // The application will create a renderer using WebGL, if possible,
+var img2 = require('./image/img-5.jpg');
+
+var img1 = require('./image/img-5.jpg');
+
+var loader = PIXI.loader;
+loader.add('img-1', img);
+loader.add('img-2', img1);
+loader.add('img-3', img2); // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
 // and the root stage PIXI.Container.
 
-var app = new PIXI.Application(); // The application will create a canvas element for you that you
-// can then insert into the DOM.
-
+var app = new PIXI.Application(window.innerWidth, window.innerHeight, {
+  autoResize: true
+});
 document.body.appendChild(app.view); // load the texture we need
 
-PIXI.loader.add('img', image).load(function (loader, resources) {
-  // This creates a texture from a 'bunny.png' image.
-  var bunny = new PIXI.Sprite(resources.bunny.texture); // Setup the position of the bunny
+loader.load(function (loader, resources) {
+  // Creating new filter first parameter is for the vertex shader if wanted. We can just set this to null.
+  var Filter = new PIXI.Filter(null, _fragment.default); // This creates a texture from a 'bunny.png' image.
 
-  bunny.x = app.renderer.width / 2;
-  bunny.y = app.renderer.height / 2; // Rotate around the center
+  var matrix = new PIXI.Sprite(resources.img1.texture); // Setup the position of the matrix
 
-  bunny.anchor.x = 0.5;
-  bunny.anchor.y = 0.5; // Add the bunny to the scene we are building.
+  matrix.x = app.renderer.width / 2;
+  matrix.y = app.renderer.height / 2; // Rotate around the center
 
-  app.stage.addChild(bunny); // Listen for frame updates
+  matrix.anchor.x = 0.5;
+  matrix.anchor.y = 0.5;
+  matrix.filters = [Filter]; // Add the matrix to the scene we are building.
+
+  app.stage.addChild(matrix); // Listen for frame updates
 
   app.ticker.add(function () {
-    // each frame we spin the bunny around a bit
-    bunny.rotation += 0.01;
+    // each frame we spin the matrix around a bit
+    matrix.rotation += 0.01;
   });
-});
-},{"pixi.js":"node_modules/pixi.js/lib/index.js","./image/img-1.jpg":"image/img-1.jpg"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+}); // Different from WebGL and Three.js's uV pixi uses a vTextureCoord to render images to our shaders.
+},{"pixi.js":"node_modules/pixi.js/lib/index.js","./shader/fragment.glsl":"shader/fragment.glsl","./image/img-1.jpg":"image/img-1.jpg","./image/img-5.jpg":"image/img-5.jpg"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -42369,7 +42387,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52040" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54874" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
